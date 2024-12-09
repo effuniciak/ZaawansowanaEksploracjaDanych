@@ -1,2 +1,2 @@
 # ZaawansowanaEksploracjaDanych
-Project in R for my masters in Advanced Data Mining class at PUT
+Project in R for my masters. Advanced Data Mining class at PUT
