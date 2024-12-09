@@ -1,0 +1,196 @@
+---
+title: "Analiza  baterii"
+author: "Ewelina Tyma"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 4
+    number_sections: true
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+```
+
+# Wstęp
+
+Jak wygląda bateria każdy widzi, a jak działa? Różnie - w zależności od parametrów konkretnej baterii miejsce i rodzaj jej wykorzystania może się od siebie różnić.
+
+# Dane
+
+## Zawartość zbioru danych  
+Analizowane dane dostępne są dzięki Departamentowi Energii USA w ramach inicjatywy naukowej Material Project. Dzięki udostępnieniu danych dotycząych struktury, właściwości i potencjalnych zastosowań materiałów badania w dziedzinach: elektronika, fotonika i magazynowanie energii są bardziej dostępne i mogą prowadzić do rozwoju tych dziedzin.  
+Zanim przejdziemy do analizowania danych przyjrzymy się w jakie dane są dostępne i w jaki sposób. Poniżej znajduje się pięć pierwszych wierszy tabeli zawierających dane, które w dalszej części zostaną poddane analizie.
+
+```{r Dane}
+bat <- read.csv(file = "C:/Users/eweli/Desktop/ZPD/projekt_baterie/mp_batteries.csv", header = TRUE, sep = ",")
+
+knitr::kable(head(bat, 5))
+```
+W danych mamy 17 kolumn zawierających następujące parametry:
+
+1. **Battery ID**: Identyfikator baterii.
+2. **Battery Formula**: Wzór chemiczny materiału baterii.
+3. **Working Ion**: Główny jon, który odpowiada za transport ładunku w baterii.
+4. **Formula Charge**: Wzór chemiczny materiału baterii w stanie naładowanym.
+5. **Formula Discharge**: Wzór chemiczny materiału baterii w stanie rozładowanym.
+6. **Max Delta Volume**: Zmiana objętości w % dla danego kroku napięcia za pomocą wzoru: max(charge, discharge)/min(charge, discharge) -1.
+7. **Average Voltage**: Średnie napięcie dla poszczególnego kroku napięcia.
+8. **Gravimetric Capacity**: Pojemność grawimetryczna, czyli ilość energii na jednostkę masy (mAh/g).
+9. **Volumetric Capacity**: Pojemność wolumetryczna, czyli ilość energii na jednostkę objętości (mAh/cm³).
+10. **Gravimetric Energy**: Gęstość energii w odniesieniu do masy baterii (Wh/kg).
+11. **Volumetric Energy**: Gęstość energii w odniesieniu do objętości baterii (Wh/L).
+12. **Atomic Fraction Charge**: Udział atomowy składników w stanie naładowanym.
+13. **Atomic Fraction Discharge**: Udział atomowy składników w stanie rozładowanym.
+14. **Stability Charge**: Wskaźnik stabilności materiału w stanie naładowanym.
+15. **Stability Discharge**: Wskaźnik stabilności materiału w stanie rozładowanym.
+16. **Steps**: Liczba odrębnych kroków napięcia od pełnego naładowania do rozładowania,oparta na stabilnych stanach pośrednich.
+17. **Max Voltage Step**: Maksymalna bezwzględna różnica między sąsiednimi krokami napięcia.
+
+### Wartości puste w zbiorze danych  
+Zanim przejdziemy do analizy danych, należy sprawdzić czy zbiór danych ma jakieś braki i jeżeli je ma zastanowić się w jaki sposób możemy rozwiązać ten problem.
+```{r Brakujące dane}
+knitr::kable(sapply(bat, function(x) sum(is.na(x))))
+```
+
+## Podsumowanie zbioru danych  
+Jak widać analizowany zbiór danych nie posiada pustych wartości. Można zatem przejść do analizy.  
+Poniżej znajduje się krótkie podsumowanie danch zawartych w tabeli.
+```{r dane podsumowanie)}
+knitr::kable(summary(bat))
+```
+
+# Analiza atrybutów zbiotu danych
+
+## Parametry fizyczne baterii
+Poniżej znajdują się histogramy dla parametrów fizycznych zawartych w zbiorze danych:
+
+### Pojemność
+```{r histogram Gravimetric Capacity, echo=FALSE}
+Gravimetric_Capacity <- bat$Gravimetric.Capacity
+hist(Gravimetric_Capacity,
+main="Rozkład pojemności grawimetrycznej",
+col="blue"
+)
+
+```
+
+```{r histogram Volumetric Capacity, echo=FALSE}
+Volumetric_Capacity <- bat$Volumetric.Capacity
+hist(Volumetric_Capacity,
+main="Rozkład pojemność wolumetrycznej",
+col="darkblue"
+)
+
+```
+
+### Gęstość energii
+```{r histogram Gravimetric Energy, echo=FALSE}
+Gravimetric_Energy <- bat$Gravimetric.Energy
+hist(Gravimetric_Energy,
+main="Rozład gęstości energii w odniesieniu do masy baterii (Wh/kg)",
+col="green"
+)
+
+```
+
+```{r histogram Volumetric Energy, echo=FALSE}
+Volumetric_Energy <- bat$Volumetric.Energy
+hist(Volumetric_Energy,
+main="Rozkład gęstości energii w odniesieniu do objętości baterii (Wh/L)",
+col="darkgreen"
+)
+
+```
+
+### Udział atomowy składników
+```{r histogram Atomic Fraction Charge, echo=FALSE}
+Atomic_Fraction_Charge <- bat$Atomic.Fraction.Charge
+hist(Atomic_Fraction_Charge,
+main="Rozkład udziału atomowego składników w stanie naładowanym.",
+col="orange"
+)
+
+```
+
+```{r histogram Atomic Fraction Discharge, echo=FALSE}
+Atomic_Fraction_Discharge <- bat$Atomic.Fraction.Discharge
+hist(Atomic_Fraction_Discharge,
+main="Rozkład udziału atomowego składników w stanie rozładowanym.",
+col="darkorange"
+)
+
+```
+
+### Wskaźnik stabilności materiału
+```{r histogram Stability Charge, echo=FALSE}
+Stability_Charge <- bat$Stability.Charge
+hist(Stability_Charge,
+main="Rozkład wskaźnika stabilności materiału w stanie naładowanym",
+col="red"
+)
+
+```
+
+```{r histogram Stability Discharge, echo=FALSE}
+Stability_Discharge <- bat$Stability.Discharge
+hist(Stability_Discharge,
+main="Rozkład wskaźnika stabilności materiału w stanie rozładowanym",
+col="darkred"
+)
+
+```
+
+## Parametry chemiczne baterii
+
+### Sprawdzanie najczęściej występujących zmiennych w danej kategorii
+
+```{r najpopularniejsze związki chemiczne w bateriach, results='hide'}
+
+for (i in colnames(bat[, 2:5])){
+    np <- names(which.max(table(bat[[i]])))
+    npl <- length(which(bat[[i]]==np))
+    print(paste("Dla kolumny", i, "nazwa najczęściej występującego związku chemicznego to", np, "ilość powtórzeń wynosi", npl))
+}
+```
+Powyższy kod znajduje najczęściej występującą w danej kolumnie wartość wraz z ilością wystąpień. Dzięki temu wiemy że:
+
++ Dla kolumny **Battery.Formula** nazwa najczęściej występującego związku chemicznego to **Li0-1V2OF5** ilość powtórzeń wynosi **19**.
++ Dla kolumny **Working.Ion** nazwa najczęściej występującego pierwiastja chemicznego to **Li** ilość powtórzeń wynosi **2440**.
++ Dla kolumny **Formula.Charge** nazwa najczęściej występującego związku chemicznego to **MnO2** ilość powtórzeń wynosi **49**.
++ Dla kolumny **Formula.Discharge** nazwa najczęściej występującego związku chemicznego to **LiCoPO4** ilość powtórzeń wynosi **19**.
+
+### Sprawdzenie wystąpień pierwiastków jako głównych jonów w baterii
+
+```{r barplot pierwiastki}
+
+a <- bat %>% 
+  count(Working.Ion) 
+
+b <- a[order(a$n,decreasing = TRUE),]
+
+bar <- barplot(b[,2], names.arg=b[,1] , main ="Ilość wystąpień pierwiastka jako głównego nośnika ładunku w baterii",  ylim = c(0, max(b[,2]) * 1.2), col = "darkmagenta")
+
+text(x = bar, y = b[,2] + 100, labels = b[,2])
+
+```
+
+# Sprawdzanie korelacji między zmiennymi
+
+```{r scatterplot}
+
+a <- bat[(bat$Working.Ion == "Li")| (bat$Working.Ion == "Ca")| (bat$Working.Ion == "Mg"), ]
+
+ggplot(a, aes(x = Gravimetric.Capacity, y = Volumetric.Capacity, colour = Working.Ion), ) + 
+  geom_point() +
+  ggtitle("Pojemność wolumeryczna vs. Pojemnośc gawimetryczna") +
+  xlab("Pojemnośc gawimetryczna") +
+  ylab("Pojemność wolumeryczna") 
+
+```
