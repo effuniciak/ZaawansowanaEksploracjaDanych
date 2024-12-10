@@ -20,7 +20,9 @@ library(ggplot2)
 
 # Wstęp
 
-Bateria – wieś na Białorusi, w obwodzie brzeskim. Mimo, że jest to na pewno ciekawe miejsce to nie o tym będzie poniższy raport.  Bateria jest to nieodłączny element naszego życia, używane są one do zasilania, telefonów, laptopów i innych urządzeń z których korzytamy na codzień. Składa się z kilku połączonych ogniw galwanicznych, z których każde ma swoje zadanie. Każde ogniwo zawiera dwie elektrody: anodę i katodę, które wykonane są z różnych materiałów. Elektrolit, substancja przewodząca, umożliwia przepływ jonów między elektrodami. Bez tego elementu bateria nie mogłaby działać. Anoda zazwyczaj składa się z metalu, który łatwo oddaje elektrony, natomiast katoda przyjmuje te elektrony, zamykając obwód elektryczny.
+Bateria – wieś na Białorusi, w obwodzie brzeskim. Mimo, że jest to na pewno ciekawe miejsce to nie o tym będzie poniższy raport.
+
+Bateria jest to nieodłączny element naszego życia, używane są one do zasilania, telefonów, laptopów i innych urządzeń z których korzytamy na codzień. Składa się z kilku połączonych ogniw galwanicznych, z których każde ma swoje zadanie. Każde ogniwo zawiera dwie elektrody: anodę i katodę, które wykonane są z różnych materiałów. Elektrolit, czyli substancja przewodząca, umożliwia przepływ jonów między elektrodami. Bez tego elementu bateria nie mogłaby działać. Anoda zazwyczaj składa się z metalu, który łatwo oddaje elektrony, natomiast katoda przyjmuje te elektrony, zamykając obwód elektryczny.
 
 # Dane
 
@@ -59,9 +61,10 @@ Zanim przejdziemy do analizy danych, należy sprawdzić czy zbiór danych ma jak
 knitr::kable(sapply(bat, function(x) sum(is.na(x))))
 ```
 
+Jak widać analizowany zbiór danych nie posiada pustych wartości. Można zatem przejść do analizy.
+
 ## Podsumowanie zbioru danych  
-Jak widać analizowany zbiór danych nie posiada pustych wartości. Można zatem przejść do analizy.  
-Poniżej znajduje się krótkie podsumowanie danch zawartych w tabeli.
+Poniżej znajduje się krótkie podsumowanie danych zawartych w tabeli.
 ```{r dane podsumowanie)}
 knitr::kable(summary(bat))
 ```
@@ -73,12 +76,12 @@ Poniżej znajdują się histogramy dla parametrów fizycznych zawartych w zbiorz
 
 ### Pojemność
 
-Gęstość energii grawimetrycznej, czasami określana jako energia właściwa, to dostępna energia na jednostkę masy substancji. Gęstość energii grawimetrycznej jest zwykle wyrażana w watogodzinach na kilogram (Wh/kg) lub megadżulach na kilogram (MJ/kg)[1]. Gęstość energii grawimetrycznej określa zawartość energii w paliwie pod względem przechowywania i obchodzenia się z substancją. Grawimetryczna gęstość energii jest jednak stosowana nie tylko w przypadku paliw; można ją również wykorzystać do określenia pojemności baterii. 
+Gęstość energii grawimetrycznej, czasami określana jako energia właściwa, to dostępna energia na jednostkę masy substancji. Gęstość energii grawimetrycznej jest zwykle wyrażana w watogodzinach na kilogram (Wh/kg) lub megadżulach na kilogram (MJ/kg). Można ją wykorzystać do określenia pojemności baterii. 
 
 ```{r histogram Gravimetric Capacity, echo=FALSE}
 Gravimetric_Capacity <- bat$Gravimetric.Capacity
 hist(Gravimetric_Capacity,
-main="Rozkład pojemności grawimetrycznej",
+main="Rozkład pojemności grawimetrycznej (mAh/g)",
 col="blue"
 )
 
@@ -89,7 +92,7 @@ Objętościowa pojemność cieplna materiału to pojemność cieplna próbki sub
 ```{r histogram Volumetric Capacity, echo=FALSE}
 Volumetric_Capacity <- bat$Volumetric.Capacity
 hist(Volumetric_Capacity,
-main="Rozkład pojemność wolumetrycznej",
+main="Rozkład pojemność wolumetrycznej (mAh/cm³)",
 col="darkblue"
 )
 
@@ -97,7 +100,7 @@ col="darkblue"
 
 ### Gęstość energii
 
-Jeżeli zbadamy ruch nośników prądu elektrycznego w baterii - elektronów swobodnych - to okazuje się, że nie jest on taki samy na całej powierzchni przekroju poprzecznego tej baterii. Z tej właśnie przyczyny wprowadza się wielkość fizyczną, która określa natężenie prądu przypadające na jednostkę masy lub obcjętości baterii.  
+Jeżeli zbadamy ruch nośników prądu elektrycznego w baterii - elektronów swobodnych - to okazuje się, że nie jest on taki samy na całej powierzchni przekroju poprzecznego tej baterii. Z tej właśnie przyczyny wprowadza się wielkość fizyczną, która określa natężenie prądu przypadające na jednostkę masy lub objętości baterii.  
 
 ```{r histogram Gravimetric Energy, echo=FALSE}
 Gravimetric_Energy <- bat$Gravimetric.Energy
@@ -119,7 +122,7 @@ col="darkgreen"
 
 ### Udział atomowy składników
 
-Bateria składa się zazwyczaj z trzech podstawowych elementów: anody (ujemnego bieguna), katody (dodatniego bieguna) oraz elektrolitu. Wsystkie te rzeczy są zrobione z różnych związków i pierwiastków chemicznych. To jakich konkretnie się użyje bezpośrednio wpływa na najistotniejsze charakterystki działania baterii - pojemność, trwałość itp.
+Bateria składa się zazwyczaj z trzech podstawowych elementów: anody (ujemnego bieguna), katody (dodatniego bieguna) oraz elektrolitu. Wszystkie są zrobione z różnych związków i pierwiastków chemicznych. To jakich konkretnie się użyje bezpośrednio wpływa na najistotniejsze charakterystki działania baterii - pojemność, trwałość itp.
 
 ```{r histogram Atomic Fraction Charge, echo=FALSE}
 Atomic_Fraction_Charge <- bat$Atomic.Fraction.Charge
@@ -142,6 +145,7 @@ col="darkorange"
 ### Wskaźnik stabilności materiału
 
 Baterie jak już wcześniej zostało przedstawione mają bardzo zróżnicowane zastosowania w życiu codziennym. Dlatego ważne jest aby były one możliwe jak najbezpieczniejsze, a co za tym idzie by składniki chemiczne w nich wykorzystywane na każdym etapie użytkowania baterii były stabilne. 
+
 ```{r histogram Stability Charge, echo=FALSE}
 Stability_Charge <- bat$Stability.Charge
 hist(Stability_Charge,
@@ -162,7 +166,11 @@ col="darkred"
 
 ## Parametry chemiczne baterii
 
-### Sprawdzanie najczęściej występujących zmiennych w danej kategorii
+W tej sekcji zajmiemy się przeanalizowaniem parametrów chemicznych baterii.
+
+### Sprawdzenie najczęściej występujących zmiennych w danej kategorii
+
+Najpierw zastanówmy się jakie wartości najczęściej powtarzają się w ramach danej kategorii.
 
 ```{r najpopularniejsze związki chemiczne w bateriach, results='hide'}
 
@@ -172,6 +180,7 @@ for (i in colnames(bat[, 2:5])){
     print(paste("Dla kolumny", i, "nazwa najczęściej występującego związku chemicznego to", np, "ilość powtórzeń wynosi", npl))
 }
 ```
+
 Powyższy kod znajduje najczęściej występującą w danej kolumnie wartość wraz z ilością wystąpień. Dzięki temu wiemy że:
 
 + Dla kolumny **Battery.Formula** nazwa najczęściej występującego związku chemicznego to **Li0-1V2OF5** ilość powtórzeń wynosi **19**.
@@ -179,7 +188,11 @@ Powyższy kod znajduje najczęściej występującą w danej kolumnie wartość w
 + Dla kolumny **Formula.Charge** nazwa najczęściej występującego związku chemicznego to **MnO2** ilość powtórzeń wynosi **49**.
 + Dla kolumny **Formula.Discharge** nazwa najczęściej występującego związku chemicznego to **LiCoPO4** ilość powtórzeń wynosi **19**.
 
+Widać, że najczęściej powtarzającą się wartością jest Li jako główny jon w baterii, występuje on w większości baterii ze zbioru.
+
 ### Sprawdzenie wystąpień pierwiastków jako głównych jonów w baterii
+
+Przeanalizujmy jak prezentuje się ilość różnych pierwiastków chemicznych będących głównymi jonami baterii.
 
 ```{r barplot pierwiastki}
 
@@ -194,7 +207,18 @@ text(x = bar, y = b[,2] + 100, labels = b[,2])
 
 ```
 
+Jak widać żaden z innych pierwiastków chemicznych nie jest nawet blisko ilości wystąpień litu. Jest to zrozumiałe ponieważ baterie litowe są aktualnie najpopularniejsze na rynku ze względu na ich następujące właściwości:
+
++ Mają znacznie większą gęstość energetyczną w porównaniu do innych dostępnych na rynku rowiązań. Dzięki temu urządzenia z tymi bateriami mogą być mniejsze i lżejsze nie tracąc na parametrach pracy.
++ Mają długi okres eksploracji. Są w stanie działać wiele lat i wielokrotnie być w tym czasie ładowane i rozładowywane. Co jest bardzo przydatne w między innymi telefonach czy latopach.
++ Mają wysoką odporność na samorozładowywyanie. Są w stanie wytrzymywać długie okresy bez wytracania energii.
++ Są w stanie szybko przyjąć dużą dawkę energii, a zatem można je szybko ładować.
+
+
+
 # Sprawdzanie korelacji między zmiennymi
+
+W poniższej sekcji przeanalizujemy trzy najczęściej występujące pierwiastki chemiczne w kontekście wartości fizycznych.
 
 ```{r scatterplot pojemność}
 
@@ -202,7 +226,7 @@ a <- bat[(bat$Working.Ion == "Li")| (bat$Working.Ion == "Ca")| (bat$Working.Ion 
 
 ggplot(a, aes(x = Gravimetric.Capacity, y = Volumetric.Capacity, colour = Working.Ion), ) + 
   geom_point() +
-  ggtitle("Pojemność wolumeryczna vs. Pojemnośc gawimetryczna") +
+  ggtitle("Pojemność wolumeryczna vs. Pojemność gawimetryczna") +
   xlab("Pojemnośc gawimetryczna (mAh/g)") +
   ylab("Pojemność wolumerycznam (Ah/cm³") 
 
