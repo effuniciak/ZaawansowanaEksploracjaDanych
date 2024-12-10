@@ -20,7 +20,7 @@ library(ggplot2)
 
 # Wstęp
 
-Bateria – wieś na Białorusi, w obwodzie brzeskim. Mimo, że jest to na pewno ciekawe miejsce to nie o tym będzie poniższy raport.
+**Bateria** – wieś na Białorusi, w obwodzie brzeskim. Mimo, że jest to na pewno ciekawe miejsce to nie o tym będzie poniższy raport.
 
 Bateria jest to nieodłączny element naszego życia, używane są one do zasilania, telefonów, laptopów i innych urządzeń z których korzytamy na codzień. Składa się z kilku połączonych ogniw galwanicznych, z których każde ma swoje zadanie. Każde ogniwo zawiera dwie elektrody: anodę i katodę, które wykonane są z różnych materiałów. Elektrolit, czyli substancja przewodząca, umożliwia przepływ jonów między elektrodami. Bez tego elementu bateria nie mogłaby działać. Anoda zazwyczaj składa się z metalu, który łatwo oddaje elektrony, natomiast katoda przyjmuje te elektrony, zamykając obwód elektryczny.
 
