@@ -20,7 +20,7 @@ library(ggplot2)
 
 # Wstęp
 
-Jak wygląda bateria każdy widzi, a jak działa? Różnie - w zależności od parametrów konkretnej baterii miejsce i rodzaj jej wykorzystania może się od siebie różnić.
+Bateria – wieś na Białorusi, w obwodzie brzeskim. Mimo, że jest to na pewno ciekawe miejsce to nie o tym będzie poniższy raport.  Bateria jest to nieodłączny element naszego życia, używane są one do zasilania, telefonów, laptopów i innych urządzeń z których korzytamy na codzień. Składa się z kilku połączonych ogniw galwanicznych, z których każde ma swoje zadanie. Każde ogniwo zawiera dwie elektrody: anodę i katodę, które wykonane są z różnych materiałów. Elektrolit, substancja przewodząca, umożliwia przepływ jonów między elektrodami. Bez tego elementu bateria nie mogłaby działać. Anoda zazwyczaj składa się z metalu, który łatwo oddaje elektrony, natomiast katoda przyjmuje te elektrony, zamykając obwód elektryczny.
 
 # Dane
 
@@ -69,9 +69,12 @@ knitr::kable(summary(bat))
 # Analiza atrybutów zbiotu danych
 
 ## Parametry fizyczne baterii
-Poniżej znajdują się histogramy dla parametrów fizycznych zawartych w zbiorze danych:
+Poniżej znajdują się histogramy dla parametrów fizycznych zawartych w zbiorze danych.
 
 ### Pojemność
+
+Gęstość energii grawimetrycznej, czasami określana jako energia właściwa, to dostępna energia na jednostkę masy substancji. Gęstość energii grawimetrycznej jest zwykle wyrażana w watogodzinach na kilogram (Wh/kg) lub megadżulach na kilogram (MJ/kg)[1]. Gęstość energii grawimetrycznej określa zawartość energii w paliwie pod względem przechowywania i obchodzenia się z substancją. Grawimetryczna gęstość energii jest jednak stosowana nie tylko w przypadku paliw; można ją również wykorzystać do określenia pojemności baterii. 
+
 ```{r histogram Gravimetric Capacity, echo=FALSE}
 Gravimetric_Capacity <- bat$Gravimetric.Capacity
 hist(Gravimetric_Capacity,
@@ -80,6 +83,8 @@ col="blue"
 )
 
 ```
+
+Objętościowa pojemność cieplna materiału to pojemność cieplna próbki substancji podzielona przez objętość próbki. Jest to ilość energii, którą należy dodać w postaci ciepła do jednej jednostki objętości materiału, aby spowodować wzrost jego temperatury o jedną jednostkę.  
 
 ```{r histogram Volumetric Capacity, echo=FALSE}
 Volumetric_Capacity <- bat$Volumetric.Capacity
@@ -91,6 +96,9 @@ col="darkblue"
 ```
 
 ### Gęstość energii
+
+Jeżeli zbadamy ruch nośników prądu elektrycznego w baterii - elektronów swobodnych - to okazuje się, że nie jest on taki samy na całej powierzchni przekroju poprzecznego tej baterii. Z tej właśnie przyczyny wprowadza się wielkość fizyczną, która określa natężenie prądu przypadające na jednostkę masy lub obcjętości baterii.  
+
 ```{r histogram Gravimetric Energy, echo=FALSE}
 Gravimetric_Energy <- bat$Gravimetric.Energy
 hist(Gravimetric_Energy,
@@ -110,6 +118,9 @@ col="darkgreen"
 ```
 
 ### Udział atomowy składników
+
+Bateria składa się zazwyczaj z trzech podstawowych elementów: anody (ujemnego bieguna), katody (dodatniego bieguna) oraz elektrolitu. Wsystkie te rzeczy są zrobione z różnych związków i pierwiastków chemicznych. To jakich konkretnie się użyje bezpośrednio wpływa na najistotniejsze charakterystki działania baterii - pojemność, trwałość itp.
+
 ```{r histogram Atomic Fraction Charge, echo=FALSE}
 Atomic_Fraction_Charge <- bat$Atomic.Fraction.Charge
 hist(Atomic_Fraction_Charge,
@@ -129,6 +140,8 @@ col="darkorange"
 ```
 
 ### Wskaźnik stabilności materiału
+
+Baterie jak już wcześniej zostało przedstawione mają bardzo zróżnicowane zastosowania w życiu codziennym. Dlatego ważne jest aby były one możliwe jak najbezpieczniejsze, a co za tym idzie by składniki chemiczne w nich wykorzystywane na każdym etapie użytkowania baterii były stabilne. 
 ```{r histogram Stability Charge, echo=FALSE}
 Stability_Charge <- bat$Stability.Charge
 hist(Stability_Charge,
@@ -183,14 +196,50 @@ text(x = bar, y = b[,2] + 100, labels = b[,2])
 
 # Sprawdzanie korelacji między zmiennymi
 
-```{r scatterplot}
+```{r scatterplot pojemność}
 
 a <- bat[(bat$Working.Ion == "Li")| (bat$Working.Ion == "Ca")| (bat$Working.Ion == "Mg"), ]
 
 ggplot(a, aes(x = Gravimetric.Capacity, y = Volumetric.Capacity, colour = Working.Ion), ) + 
   geom_point() +
   ggtitle("Pojemność wolumeryczna vs. Pojemnośc gawimetryczna") +
-  xlab("Pojemnośc gawimetryczna") +
-  ylab("Pojemność wolumeryczna") 
+  xlab("Pojemnośc gawimetryczna (mAh/g)") +
+  ylab("Pojemność wolumerycznam (Ah/cm³") 
+
+```
+
+```{r scatterplot gęstość, echo=FALSE}
+
+a <- bat[(bat$Working.Ion == "Li")| (bat$Working.Ion == "Ca")| (bat$Working.Ion == "Mg"), ]
+
+ggplot(a, aes(x = Gravimetric.Energy, y = Volumetric.Energy, colour = Working.Ion), ) + 
+  geom_point() +
+  ggtitle("Gęstość energii") +
+  xlab("W odniesieniu do masy baterii (Wh/kg)") +
+  ylab("W odniesieniu do objętości baterii (Wh/L)") 
+
+```
+
+```{r scatterplot udział atomowy, echo=FALSE}
+
+a <- bat[(bat$Working.Ion == "Li")| (bat$Working.Ion == "Ca")| (bat$Working.Ion == "Mg"), ]
+
+ggplot(a, aes(x = Atomic.Fraction.Charge, y = Atomic.Fraction.Discharge, colour = Working.Ion), ) + 
+  geom_point() +
+  ggtitle("Udział atomowy") +
+  xlab("Stan naładowany") +
+  ylab("Stan rozładowany") 
+
+```
+
+```{r scatterplot wskaźnik stabliności, echo=FALSE}
+
+a <- bat[(bat$Working.Ion == "Li")| (bat$Working.Ion == "Ca")| (bat$Working.Ion == "Mg"), ]
+
+ggplot(a, aes(x = Stability.Charge, y = Stability.Discharge, colour = Working.Ion), ) + 
+  geom_point() +
+  ggtitle("Wskaźnik stabilności materiału") +
+  xlab("Stan naładowany") +
+  ylab("Stan rozładowany")
 
 ```
